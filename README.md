@@ -23,5 +23,8 @@ How to Play:
 
 Note: Don't worry about code cleanliness, having something present is better than nothing here, and the beautiful thing about version control is that it can improve over time, from multiple sources :)
 
+Special thanks to all of the folks at IndieCade that made this possible, including Shawn Pierre, who organized the Game Jam itself, bringing together an incredible group of daring game designers, devs, and simply curious minds.
+
 with Blink'n love,
+
 Jonathan Bobrow, Move38
