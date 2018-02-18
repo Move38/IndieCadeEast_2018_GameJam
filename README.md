@@ -3,9 +3,10 @@ A repository for games and artistic experiments created during a 12 hour game ja
 
 The repository is structured by game prompt, please follow the simple guidelines to add your game to the repository.
 1. Fork this repository
-2. Add a folder to the Repository titled (IN ALL CAPS) simply with the name of the prompt (i.e. TRANSCEND/)
-3. Inside of your folder, place a README.md, and a single folder including your Blinks Sketch (.ino)
-4. Your README.md can be as simple as the folling
+2. Create a branch named for your game/prompt
+3. Add a folder to the Repository titled (IN ALL CAPS) simply with the name of the prompt (i.e. TRANSCEND/)
+4. Inside of your folder, place a README.md, and a single folder including your Blinks Sketch (.ino)
+5. Your README.md can be as simple as the folling
 ```
 #PROMPT
 
@@ -18,7 +19,7 @@ Description of game play (feel free to describe this as a story)
 How to Play:
 
 ```
-5. Once you have committed your updates to your fork, create a Pull Request to merge your contributions in to this repository. I will review and accept your submission to be part of this collection of Blinks games.
+6. Once you have committed your updates to your fork, create a Pull Request to merge your contributions in to this repository. I will review and accept your submission to be part of this collection of Blinks games.
 
 Note: Don't worry about code cleanliness, having something present is better than nothing here, and the beautiful thing about version control is that it can improve over time, from multiple sources :)
 
