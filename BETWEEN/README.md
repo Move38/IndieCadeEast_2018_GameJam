@@ -14,3 +14,9 @@ Players will take turns pressing the button on the middle tile to try to stop th
 With each button press, the spinning light gets faster, and every round is randomized, so you never know how many pushes will set off the "bomb".
 When the spinner stops, the lights on the tiles will indicate whether you've succesfully hit a wall and avoided the bomb, or if you've missed, exploding the bomb and removing yourself from the game.
 The last player standing wins!
+
+TIPS:
+
+If at any point you've made a setup mistake or want to reset the game, separate the tiles and hold the button for three seconds to set each one back to the initial blue state.
+
+The outer "wall" tiles have four levels of health: Green, yellow, orange, and red. After red, they explode!
