@@ -20,3 +20,7 @@ TIPS:
 If at any point you've made a setup mistake or want to reset the game, separate the tiles and hold the button for three seconds to set each one back to the initial blue state.
 
 The outer "wall" tiles have four levels of health: Green, yellow, orange, and red. After red, they explode!
+
+BUGS TO BE FIXED
+- Random aspect currently picks from 0-8. Need to exclude 0 and 1 from the range. Probably just have to add 2 to the variable that controls randomness.
+- Damage to walls is currently not working properly. Should reduce by one step per hit, green to yellow to orange to red to explode. Seems to just reduce arbitrarily.
