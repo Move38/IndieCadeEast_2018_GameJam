@@ -46,6 +46,7 @@ Timer bombShowFaceTimer;
 
 bool  bSpinning;
 bool  bExplode;
+bool  bExplodeIntoShield;
 byte  bombTickFace;
 byte  bombClickCount;
 
@@ -84,48 +85,48 @@ void loop() {
         bSpinning = false;
       }
     } // END BOMB
-    
+
     else if (mode == SHIELD ) {
-     
+
       // respond with a fun hello... don't effect game state
-    
+
     }
-    
+
     else if (mode == READY ) {
-    
+
       // respond with a fun hello... don't effect game state
-    
+
     }
   }
 
 
   if ( buttonDoubleClicked() ) {
-    
+
     if ( mode == READY ) {
       // become the bomb
       mode = BOMB;
-      
+
       // and start spinning
       resetSpin();
       bSpinning = true;
     }
-  
+
     else if ( mode == BOMB ) {
       // start the spinning again
       resetSpin();
       bSpinning = true;
     }
-    
+
     else if ( mode == SHIELD ) {
       // respond with a fun hello... don't effect game state
     }
   }
 
   if ( buttonLongPressed() ) {
-    
+
     // reset
     resetToReady();
-    
+
     // TODO: would be nice to hold a single one down to then reset all of the others...
     // this is less important than getting game play correct, and feels like the very last
     // thing to do
@@ -167,6 +168,13 @@ void loop() {
           }
         }
       }
+      else {
+        // we're exploded
+        if ( !isValueReceivedOnFaceExpired( bombTickFace ) ) {
+          // if someone present where we exploded, we safe
+          bExplodeIntoShield = true;
+        }
+      }
       // if we've sparked, check to see if we've hit a sheild, or nothing
       // if nothing, then the spark becomes an explosion
       // if we hit a shield, the spark shows direction
@@ -186,7 +194,7 @@ void loop() {
             // if our shield value is 0, become an explosion
             if ( shieldHealth == SHIELD_MIN_HEALTH ) {
               // explode this shield (maybe rainbow fun here)
-              
+
             } else {
               shieldHealth--;
             }
@@ -218,7 +226,12 @@ void loop() {
       }
       else {
         if ( bExplode ) {
-          setColor(RED);
+          if ( bExplodeIntoShield ) {
+            setColor(YELLOW);         // show that we are safe
+          }
+          else {
+            setColor(RED);            // show that we are out... huge explosion
+          }
           setFaceColor( bombTickFace, WHITE );
           // show white if safe
           // red if out....
@@ -230,7 +243,7 @@ void loop() {
 
     case SHIELD:
       // display shield level
-      if( shieldHealth == SHIELD_MIN_HEALTH ) {
+      if ( shieldHealth == SHIELD_MIN_HEALTH ) {
         // show explosion
         setFaceColor( (millis() / 40) % 6, makeColorHSB( ( millis() / 5) % 255, 255, 255) ); // ROTATING RAINBOW
       }
@@ -284,6 +297,7 @@ void resetSpin() {
   bSpinning = false;
   bombClickCount = 0;
   bExplode = false;
+  bExplodeIntoShield = false;
 }
 
 /*
@@ -296,6 +310,7 @@ void resetToReady() {
   bombTickFace = 0;
   bombClickCount = 0;
   bExplode = false;
+  bExplodeIntoShield = false;
 }
 
 /*
@@ -325,17 +340,17 @@ byte getTickRate(byte clickCount) {
 }
 
 Color getShieldColor( byte health ) {
-  
+
   Color shieldColor = OFF;  // default
 
-  switch( health ) {
+  switch ( health ) {
     case 0: shieldColor = WHITE; break;                         // WHITE - TODO: replace w/ EXPLOSION
     case 1: shieldColor = makeColorHSB(  0, 255, 255); break;   // RED
     case 2: shieldColor = makeColorHSB( 25, 255, 255); break;   // ORANGE
     case 3: shieldColor = makeColorHSB( 50, 255, 255); break;   // YELLOW
     case 4: shieldColor = makeColorHSB( 75, 255, 255); break;   // GREEN
   }
-  
+
   return shieldColor;
 }
 
