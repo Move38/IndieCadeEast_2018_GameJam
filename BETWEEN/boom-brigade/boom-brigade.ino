@@ -232,7 +232,7 @@ void loop() {
       // display shield level
       if( shieldHealth == SHIELD_MIN_HEALTH ) {
         // show explosion
-        setFaceColor( (millis() / 30) % 6, makeColorHSB( ( millis() / 3) % 255, 255, 255) ); // ROTATING RAINBOW
+        setFaceColor( (millis() / 40) % 6, makeColorHSB( ( millis() / 5) % 255, 255, 255) ); // ROTATING RAINBOW
       }
       else {
         setColor( getShieldColor( shieldHealth ) );
