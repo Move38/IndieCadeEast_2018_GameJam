@@ -23,7 +23,7 @@
    Jonathan Bobrow
 */
 
-#define SHIELD_MAX_HEALTH  3
+#define SHIELD_MAX_HEALTH  4
 #define SHIELD_MIN_HEALTH  0
 
 #define MAX_CLICK_COUNT    10
@@ -37,17 +37,9 @@ enum Modes {
   SPARK           // let the shield know it's been damaged
 };
 
-Color shieldColors[] = {
-  makeColorHSB(  0, 255, 255),   // RED
-  makeColorHSB( 25, 255, 255),   // ORANGE
-  makeColorHSB( 50, 255, 255),   // YELLOW
-  makeColorHSB( 75, 255, 255)    // GREEN
-};
-
 byte mode = READY;
 
-byte shieldHealth = SHIELD_MAX_HEALTH;
-
+byte shieldHealth;
 
 Timer bombTickTimer;
 Timer bombShowFaceTimer;
@@ -194,6 +186,7 @@ void loop() {
             // if our shield value is 0, become an explosion
             if ( shieldHealth == SHIELD_MIN_HEALTH ) {
               // explode this shield (maybe rainbow fun here)
+              
             } else {
               shieldHealth--;
             }
@@ -237,9 +230,14 @@ void loop() {
 
     case SHIELD:
       // display shield level
-      setColor( shieldColors[ shieldHealth ] );
-      // or explosion
-      // or helping explosion
+      if( shieldHealth == SHIELD_MIN_HEALTH ) {
+        // show explosion
+        setFaceColor( (millis() / 30) % 6, makeColorHSB( ( millis() / 3) % 255, 255, 255) ); // ROTATING RAINBOW
+      }
+      else {
+        setColor( getShieldColor( shieldHealth ) );
+      }
+      // or helping show internal explosion
       break;
 
     default: break;
@@ -324,5 +322,20 @@ byte getTickRate(byte clickCount) {
   }
 
   return tickRate;
+}
+
+Color getShieldColor( byte health ) {
+  
+  Color shieldColor = OFF;  // default
+
+  switch( health ) {
+    case 0: shieldColor = WHITE; break;                         // WHITE - TODO: replace w/ EXPLOSION
+    case 1: shieldColor = makeColorHSB(  0, 255, 255); break;   // RED
+    case 2: shieldColor = makeColorHSB( 25, 255, 255); break;   // ORANGE
+    case 3: shieldColor = makeColorHSB( 50, 255, 255); break;   // YELLOW
+    case 4: shieldColor = makeColorHSB( 75, 255, 255); break;   // GREEN
+  }
+  
+  return shieldColor;
 }
 
