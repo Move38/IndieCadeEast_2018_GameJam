@@ -35,7 +35,7 @@ enum Modes {
   BOMB,           // center piece you are trying to defuse
   SHIELD,         // surrounding pieces to protect you from the bomb
   SPARK,          // let the shield know it's been damaged
-  EXPLOSION       // let the shield help our bomb in displaying an explosion 
+  EXPLOSION       // let the shield help our bomb in displaying an explosion
 };
 
 byte mode = READY;
@@ -195,7 +195,7 @@ void loop() {
     case SHIELD:
       // if we see a spark lower our shield value by 1
       bShareExplosion = false;
-      
+
       FOREACH_FACE( f ) {
         if ( !isValueReceivedOnFaceExpired( f ) ) {
 
@@ -289,8 +289,8 @@ void loop() {
       // display shield level
       if ( shieldHealth == SHIELD_MIN_HEALTH ) {
         // show explosion
-        
-        if( isAlone() ) {
+
+        if ( isAlone() ) {
           // rotating rainbow now that we have a token
           setFaceColor( (millis() / 40) % 6, makeColorHSB( ( millis() / 5) % 255, 255, 255) ); // ROTATING RAINBOW
         }
@@ -303,10 +303,10 @@ void loop() {
       }
       else {
         setColor( getShieldColor( shieldHealth ) );
-        
+
         // or helping show internal explosion
-        if(bShareExplosion) {
-          setFaceColor( shareExplosionFace, makeColorHSB(rand(25), 255, 255 - ((millis() / 2) % 255) ) );
+        if (bShareExplosion) {
+          shareExplosion( shareExplosionFace );
         }
 
       }
@@ -331,7 +331,7 @@ void loop() {
 
       // if sparked, send in a direction
       if ( bExplode ) {
-        
+
         if ( bExplodeIntoShield ) {
           setValueSentOnFace( SPARK, bombTickFace );
         }
@@ -421,5 +421,21 @@ Color getShieldColor( byte health ) {
   }
 
   return shieldColor;
+}
+
+/*
+   Share explosion
+*/
+void shareExplosion( byte face ) {
+
+  setFaceColor( shareExplosionFace, makeColorHSB(rand(25), 255, 255 - ((millis() / 2) % 255) ) );
+
+  // use the neighboring faces as well
+  byte prevFace = (FACE_COUNT + face - 1) % FACE_COUNT;
+  byte nextFace = (face + 1) % FACE_COUNT;
+
+  setFaceColor( prevFace, makeColorHSB(rand(25), 255, 255 - (((millis() - 40) / 2) % 255) ) );
+  setFaceColor( nextFace, makeColorHSB(rand(25), 255, 255 - (((millis() - 40) / 2) % 255) ) );
+
 }
 
