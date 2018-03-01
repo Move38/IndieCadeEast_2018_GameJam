@@ -52,13 +52,15 @@ byte shieldHealth = SHIELD_MAX_HEALTH;
 Timer bombTickTimer;
 Timer bombShowFaceTimer;
 
-bool  bSpinning = false;
-bool  bExplode = false;
-byte  bombTickFace = 0;
-byte  bombClickCount = 0;
+bool  bSpinning;
+bool  bExplode;
+byte  bombTickFace;
+byte  bombClickCount;
 
 void setup() {
-  // put your setup code here, to run once:
+
+  // Initialize all of our variables
+  resetToReady();
 }
 
 void loop() {
