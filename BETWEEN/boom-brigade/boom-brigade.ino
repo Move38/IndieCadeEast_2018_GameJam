@@ -50,6 +50,8 @@ bool  bExplodeIntoShield;
 byte  bombTickFace;
 byte  bombClickCount;
 
+byte  bombCountDownCount;
+
 void setup() {
 
   // Initialize all of our variables
@@ -165,6 +167,11 @@ void loop() {
             if ( bombTickFace >= FACE_COUNT ) {
               bombTickFace = 0;
             }
+
+            // move our countdown for us
+            if ( bombCountDownCount != 0 ) {
+              bombCountDownCount--;
+            }
           }
         }
       }
@@ -221,8 +228,22 @@ void loop() {
       // display countdown
       // or spinner
       if ( bSpinning ) {
-        setColor(OFF);
-        setFaceColor( bombTickFace, ORANGE );
+        
+        if ( bombCountDownCount == 0 ) {
+          // when done with the countdown, no need to have the cool wipe effect :)
+          byte prevFace = (FACE_COUNT + bombTickFace - 1) % FACE_COUNT; 
+          setFaceColor( prevFace, OFF);
+          setFaceColor( bombTickFace, ORANGE );
+        }
+        else {
+          switch(bombCountDownCount) {
+            case 5: setFaceColor( bombTickFace, makeColorRGB(255, 255, 150) ); break; // WHITE-YELLOW
+            case 4: setFaceColor( bombTickFace, makeColorRGB(255, 235,  75) ); break; // --
+            case 3: setFaceColor( bombTickFace, makeColorRGB(255, 215,  30) ); break; // --
+            case 2: setFaceColor( bombTickFace, makeColorRGB(255, 195,   0) ); break; // --
+            case 1: setFaceColor( bombTickFace, makeColorRGB(255, 175,   0) ); break; // YELLOW-ORANGE
+          }
+        }
       }
       else {
         if ( bExplode ) {
@@ -298,6 +319,7 @@ void resetSpin() {
   bombClickCount = 0;
   bExplode = false;
   bExplodeIntoShield = false;
+  bombCountDownCount = FACE_COUNT;
 }
 
 /*
@@ -311,6 +333,7 @@ void resetToReady() {
   bombClickCount = 0;
   bExplode = false;
   bExplodeIntoShield = false;
+  bombCountDownCount = FACE_COUNT;
 }
 
 /*
@@ -323,12 +346,12 @@ byte getTickRate(byte clickCount) {
   byte tickRate = 200;
 
   switch (clickCount) {
-    case 0:  tickRate = 150; break;
-    case 1:  tickRate = 120; break;
-    case 2:  tickRate = 100; break;
-    case 3:  tickRate =  80; break;
-    case 4:  tickRate =  60; break;
-    case 5:  tickRate =  50; break;
+    case 0:  tickRate = 120; break;
+    case 1:  tickRate = 100; break;
+    case 2:  tickRate =  80; break;
+    case 3:  tickRate =  60; break;
+    case 4:  tickRate =  50; break;
+    case 5:  tickRate =  45; break;
     case 6:  tickRate =  40; break;
     case 7:  tickRate =  35; break;
     case 8:  tickRate =  30; break;
