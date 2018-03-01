@@ -69,10 +69,10 @@ void loop() {
      Button Actions
   */
   if ( buttonPressed() ) {
-    // handle it differently for the different states
-    // if bomb, with some probability, become sparked
+
     if ( mode == BOMB ) {
 
+      // we were just pushed, give user feedback on which face they just landed on
       bombShowFaceTimer.set( SHOW_FACE_DURATION_MS );
 
       if (bombClickCount < MAX_CLICK_COUNT) {
@@ -86,30 +86,57 @@ void loop() {
         }
       }
       else {
-        // we've been clicked max of 10 times, explode
+        // we've been clicked the maximum amount of times
+        // time to explode
         bExplode = true;
         bSpinning = false;
       }
+    } // END BOMB
+    
+    else if (mode == SHIELD ) {
+     
+      // respond with a fun hello... don't effect game state
+    
+    }
+    
+    else if (mode == READY ) {
+    
+      // respond with a fun hello... don't effect game state
+    
     }
   }
 
 
   if ( buttonDoubleClicked() ) {
-    // become the bomb... or
+    
     if ( mode == READY ) {
+      // become the bomb
       mode = BOMB;
-      resetSpin();
-    }
-    // start the spinning again
-    if ( mode == BOMB ) {
+      
+      // and start spinning
       resetSpin();
       bSpinning = true;
+    }
+  
+    else if ( mode == BOMB ) {
+      // start the spinning again
+      resetSpin();
+      bSpinning = true;
+    }
+    
+    else if ( mode == SHIELD ) {
+      // respond with a fun hello... don't effect game state
     }
   }
 
   if ( buttonLongPressed() ) {
+    
     // reset
     resetToReady();
+    
+    // TODO: would be nice to hold a single one down to then reset all of the others...
+    // this is less important than getting game play correct, and feels like the very last
+    // thing to do
   }
 
   /*
