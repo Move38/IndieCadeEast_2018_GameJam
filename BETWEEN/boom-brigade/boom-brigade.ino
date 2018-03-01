@@ -228,15 +228,20 @@ void loop() {
       // display countdown
       // or spinner
       if ( bSpinning ) {
-        
+
         if ( bombCountDownCount == 0 ) {
           // when done with the countdown, no need to have the cool wipe effect :)
-          byte prevFace = (FACE_COUNT + bombTickFace - 1) % FACE_COUNT; 
+          byte prevFace = (FACE_COUNT + bombTickFace - 1) % FACE_COUNT;
           setFaceColor( prevFace, OFF);
           setFaceColor( bombTickFace, ORANGE );
+
+          // flicker if we are paused and showing face
+          if (!bombShowFaceTimer.isExpired()) {
+            setFaceColor( bombTickFace, dim( YELLOW, rand(255)));  // flicker YELLOW
+          }
         }
         else {
-          switch(bombCountDownCount) {
+          switch (bombCountDownCount) {
             case 5: setFaceColor( bombTickFace, makeColorRGB(255, 255, 150) ); break; // WHITE-YELLOW
             case 4: setFaceColor( bombTickFace, makeColorRGB(255, 235,  75) ); break; // --
             case 3: setFaceColor( bombTickFace, makeColorRGB(255, 215,  30) ); break; // --
@@ -248,12 +253,17 @@ void loop() {
       else {
         if ( bExplode ) {
           if ( bExplodeIntoShield ) {
-            setColor(YELLOW);         // show that we are safe
+            FOREACH_FACE( f ) {
+              setFaceColor( f, GREEN);         // show that we are safe
+            }
+            setFaceColor( bombTickFace, dim( ORANGE, rand(255)));  // flicker YELLOW
           }
           else {
-            setColor(RED);            // show that we are out... huge explosion
+            FOREACH_FACE( f ) {
+              setFaceColor( f, makeColorHSB(rand(25), 255, rand(1) * 255));         // show that we are out... huge explosion
+            }
+            setFaceColor( bombTickFace, WHITE );
           }
-          setFaceColor( bombTickFace, WHITE );
           // show white if safe
           // red if out....
         }
@@ -266,7 +276,17 @@ void loop() {
       // display shield level
       if ( shieldHealth == SHIELD_MIN_HEALTH ) {
         // show explosion
-        setFaceColor( (millis() / 40) % 6, makeColorHSB( ( millis() / 5) % 255, 255, 255) ); // ROTATING RAINBOW
+        
+        if( isAlone() ) {
+          // rotating rainbow now that we have a token
+          setFaceColor( (millis() / 40) % 6, makeColorHSB( ( millis() / 5) % 255, 255, 255) ); // ROTATING RAINBOW
+        }
+        else {
+          // disco explosion
+          setColor(OFF);
+          setFaceColor( rand(5), makeColorHSB( ( millis() / 5) % 255, 255, 255) ); // ROTATING RAINBOW
+          setFaceColor( rand(5), makeColorHSB( ( (millis() + 127) / 5) % 255, 255, 255) ); // ROTATING RAINBOW
+        }
       }
       else {
         setColor( getShieldColor( shieldHealth ) );
