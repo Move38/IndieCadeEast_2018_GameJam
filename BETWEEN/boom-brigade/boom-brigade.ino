@@ -34,7 +34,8 @@ enum Modes {
   READY,          // waiting for the game to start
   BOMB,           // center piece you are trying to defuse
   SHIELD,         // surrounding pieces to protect you from the bomb
-  SPARK           // let the shield know it's been damaged
+  SPARK,          // let the shield know it's been damaged
+  EXPLOSION       // let the shield help our bomb in displaying an explosion 
 };
 
 byte mode = READY;
@@ -51,6 +52,9 @@ byte  bombTickFace;
 byte  bombClickCount;
 
 byte  bombCountDownCount;
+
+bool  bShareExplosion;
+byte  shareExplosionFace;
 
 void setup() {
 
@@ -190,6 +194,8 @@ void loop() {
 
     case SHIELD:
       // if we see a spark lower our shield value by 1
+      bShareExplosion = false;
+      
       FOREACH_FACE( f ) {
         if ( !isValueReceivedOnFaceExpired( f ) ) {
 
@@ -205,6 +211,13 @@ void loop() {
             } else {
               shieldHealth--;
             }
+          }
+
+          // if we see an explosion, react to it
+          if ( neighbor == EXPLOSION ) {
+            // explosion here
+            bShareExplosion = true;
+            shareExplosionFace = f;
           }
         }
       }
@@ -290,8 +303,13 @@ void loop() {
       }
       else {
         setColor( getShieldColor( shieldHealth ) );
+        
+        // or helping show internal explosion
+        if(bShareExplosion) {
+          setFaceColor( shareExplosionFace, makeColorHSB(rand(25), 255, 255 - ((millis() / 2) % 255) ) );
+        }
+
       }
-      // or helping show internal explosion
       break;
 
     default: break;
@@ -313,7 +331,14 @@ void loop() {
 
       // if sparked, send in a direction
       if ( bExplode ) {
-        setValueSentOnFace( SPARK, bombTickFace );
+        
+        if ( bExplodeIntoShield ) {
+          setValueSentOnFace( SPARK, bombTickFace );
+        }
+        else {
+          // share the explosion with others
+          setValueSentOnAllFaces( EXPLOSION );
+        }
       }
       // once spark received, return to bomb broadcast
       break;
@@ -354,6 +379,7 @@ void resetToReady() {
   bExplode = false;
   bExplodeIntoShield = false;
   bombCountDownCount = FACE_COUNT;
+  bShareExplosion = false;
 }
 
 /*
