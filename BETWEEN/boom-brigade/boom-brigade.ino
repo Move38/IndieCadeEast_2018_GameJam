@@ -119,8 +119,10 @@ void loop() {
 
     else if ( mode == BOMB ) {
       // start the spinning again
-      resetSpin();
-      bSpinning = true;
+      if(bSpinning == false ) { // don't allow a reset mid-round
+        resetSpin();
+        bSpinning = true;
+      }
     }
 
     else if ( mode == SHIELD ) {
