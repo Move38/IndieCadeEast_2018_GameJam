@@ -35,6 +35,7 @@ enum Modes {
   BOMB,           // center piece you are trying to defuse
   SHIELD,         // surrounding pieces to protect you from the bomb
   SPARK,          // let the shield know it's been damaged
+  CONTAINED,      // A contained explosion, shield gets blown away
   EXPLOSION       // let the shield help our bomb in displaying an explosion
 };
 
@@ -46,6 +47,7 @@ Timer bombTickTimer;
 Timer bombShowFaceTimer;
 
 bool  bSpinning;
+bool  bSpark;
 bool  bExplode;
 bool  bExplodeIntoShield;
 byte  bombTickFace;
@@ -64,6 +66,7 @@ void setup() {
 
 void loop() {
 
+  bSpark = false;
   /*
      Button Actions
   */
@@ -77,6 +80,7 @@ void loop() {
       if (bombClickCount < MAX_CLICK_COUNT) {
 
         bombClickCount++;
+        bSpark = true;
 
         // chance of explode based on clickCount
         if ( rand(100) < bombClickCount * 5 ) {
@@ -216,6 +220,11 @@ void loop() {
           }
 
           // if we see an explosion, react to it
+          if ( neighbor == CONTAINED ) {
+            shieldHealth = SHIELD_MIN_HEALTH;
+          }
+
+          // if we see an explosion, react to it
           if ( neighbor == EXPLOSION ) {
             // explosion here
             bShareExplosion = true;
@@ -269,7 +278,7 @@ void loop() {
         if ( bExplode ) {
           if ( bExplodeIntoShield ) {
             FOREACH_FACE( f ) {
-              setFaceColor( f, GREEN);         // show that we are safe
+              setFaceColor( f, BLUE);         // show that we are safe
             }
             setFaceColor( bombTickFace, dim( ORANGE, rand(255)));  // flicker YELLOW
           }
@@ -332,10 +341,14 @@ void loop() {
       setValueSentOnAllFaces( BOMB );
 
       // if sparked, send in a direction
+      if ( bSpark ) {
+          setValueSentOnFace( SPARK, bombTickFace );
+      }
+      
       if ( bExplode ) {
 
         if ( bExplodeIntoShield ) {
-          setValueSentOnFace( SPARK, bombTickFace );
+          setValueSentOnFace( CONTAINED, bombTickFace );
         }
         else {
           // share the explosion with others
