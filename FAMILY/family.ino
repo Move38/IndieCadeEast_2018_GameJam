@@ -1,6 +1,9 @@
 #include "Serial.h"
 ServicePortSerial sp;
 
+#define BUTTON_HOLDOFF_DURATION 200
+
+Timer buttonHoldoffTimer;
 
 int colorLoop = 10;
 //Color colors[10]; //is colorLoop
@@ -181,7 +184,9 @@ void loop() {
         setColor(YELLOW);
       }
     
-    if(buttonSingleClicked()||buttonDoubleClicked()||buttonMultiClicked()){
+    if( buttonPressed() && buttonHoldoffTimer.isExpired() ){
+      buttonHoldoffTimer.set( BUTTON_HOLDOFF_DURATION );
+      setColor(WHITE); // register entry
       if (colorLength < colorLoop){
         //colors[colorLength] = currentColor;
         intColors[colorLength] = currentIntColor;
